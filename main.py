@@ -3,6 +3,8 @@ from pygame.locals import *
 from scripts.button import Button
 from settings import *
 from scripts.player import Player
+from scripts.tile import Tile
+from assets.level.level_one import map_one
 
 
 def draw_text(text, font, color, surface, x, y):
@@ -10,6 +12,12 @@ def draw_text(text, font, color, surface, x, y):
     textrect = textobj.get_rect()
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
+
+
+def import_map(map):
+    for tile in map:
+        for i in map[tile]:
+            Tile(tile_group, map[tile][0], map[tile][1], map[tile][2])
 
 
 class Game:
@@ -23,19 +31,16 @@ class Game:
 
         self.font = pygame.font.SysFont(None, 20)
 
-        self.player_group = pygame.sprite.GroupSingle()
-
-        self.floor = pygame.Surface((WIN_WIDTH, 75))
-        self.floor.fill("red")
-        self.floor_rect = self.floor.get_rect(topleft=(0, WIN_HEIGHT - 75))
-        self.old_floor_rect = self.floor_rect.copy()
-
         self.clicked = False
 
         self.setup()
 
     def setup(self):
-        self.player = Player(self.player_group, (100, 100))
+        self.player = Player(player_group, (100, 100))
+
+        self.floor = Tile(tile_group, (WIN_WIDTH, 75), (0, WIN_HEIGHT - 75), "blue")
+
+        # import_map(map_one)
 
     def menu(self):
         while True:
@@ -87,13 +92,13 @@ class Game:
                     if event.key == K_ESCAPE:
                         running = False
 
-            self.player_group.update(dt, self.floor_rect, self.old_floor_rect)
+            player_group.update(dt)
+            tile_group.update()
 
             self.display_surface.fill((0, 0, 0))
 
-            self.display_surface.blit(self.floor, self.floor_rect)
-
-            self.player_group.draw(self.display_surface)
+            player_group.draw(self.display_surface)
+            tile_group.draw(self.display_surface)
 
             pygame.display.update()
 

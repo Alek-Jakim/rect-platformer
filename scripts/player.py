@@ -1,6 +1,7 @@
 import pygame
 from pygame.math import Vector2
 from pygame.locals import *
+from settings import *
 
 
 class Player(pygame.sprite.Sprite):
@@ -17,7 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.dir = Vector2()
 
         self.velocity = 400
-        self.entity_gravity = 0
+        self.gravity = 0
         self.dir.y = 1
         self.is_jumping = False
 
@@ -34,33 +35,34 @@ class Player(pygame.sprite.Sprite):
 
         if jump_key[K_SPACE] and not self.is_jumping:
             self.is_jumping = True
-            self.entity_gravity = -900
+            self.gravity = -1900
 
-    def move(self, delta, floor_rect, old_floor_rect):
+    def move(self, delta):
 
         self.pos.x += self.dir.x * self.velocity * delta
         self.rect.x = round(self.pos.x)
 
-        self.pos.y += self.dir.y * self.entity_gravity * delta
+        self.pos.y += self.dir.y * self.gravity * delta
         self.rect.y = round(self.pos.y)
-        self.floor_collision(floor_rect, old_floor_rect)
+        self.floor_collision()
 
-    def floor_collision(self, floor_rect, old_floor_rect):
-        if self.rect.colliderect(floor_rect):
+    def floor_collision(self):
+        for tile in tile_group.sprites():
+            if self.rect.colliderect(tile.rect):
+                if (
+                    self.rect.bottom >= tile.rect.top
+                    and self.old_rect.bottom <= tile.old_rect.top
+                ):
+                    self.rect.bottom = tile.rect.top
+                    self.gravity = 0
+                    self.is_jumping = False
 
-            if (
-                self.rect.bottom >= floor_rect.top
-                and self.old_rect.bottom <= old_floor_rect.top
-            ):
-                self.rect.bottom = floor_rect.top
-                self.entity_gravity = 0
-                self.is_jumping = False
+                self.pos.y = self.rect.y
+            else:
+                self.gravity += 30
 
-            self.pos.y = self.rect.y
-        else:
-            self.entity_gravity += 30
-
-    def update(self, delta, floor_rect, old_floor_rect):
+    def update(self, delta):
         self.old_rect = self.rect.copy()
         self.input()
-        self.move(delta, floor_rect, old_floor_rect)
+        self.move(delta)
+        print(self.gravity)
