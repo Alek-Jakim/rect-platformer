@@ -4,7 +4,8 @@ from scripts.button import Button
 from settings import *
 from scripts.player import Player
 from scripts.tile import Tile
-from assets.level.level_one import map_one
+from assets.level.level_one import map_one, map_one_enemies
+from scripts.enemy import Enemy
 
 
 def draw_text(text, font, color, surface, x, y):
@@ -17,6 +18,11 @@ def draw_text(text, font, color, surface, x, y):
 def import_map(map):
     for tile in map:
         Tile(tile_group, map[tile][0], map[tile][1], map[tile][2])
+
+
+def import_enemies(enemies):
+    for enemy in enemies:
+        Enemy(enemy_group, enemies[enemy][0], enemies[enemy][1])
 
 
 class Game:
@@ -35,9 +41,10 @@ class Game:
         self.setup()
 
     def setup(self):
-        self.player = Player(player_group, (100, 100))
+        self.player = Player(player_group, (100, 500))
 
         import_map(map_one)
+        import_enemies(map_one_enemies)
 
     def menu(self):
         while True:
@@ -90,6 +97,7 @@ class Game:
                         running = False
 
             player_group.update(dt)
+            enemy_group.update(dt)
             laser_group.update(dt)
             tile_group.update()
 
@@ -98,6 +106,7 @@ class Game:
             player_group.draw(self.display_surface)
             tile_group.draw(self.display_surface)
             laser_group.draw(self.display_surface)
+            enemy_group.draw(self.display_surface)
 
             pygame.display.update()
 

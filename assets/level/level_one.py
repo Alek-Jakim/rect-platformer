@@ -11,3 +11,9 @@ map_one = {
     "platform_four": [(300, 25), (WIN_WIDTH - 350, 300), "blue"],
     "platform_five": [(300, 25), (WIN_WIDTH - 250, 150), "blue"],
 }
+
+
+map_one_enemies = {
+    "enemy_one": [(200, 300), 200],
+    "enemy_two": [(WIN_WIDTH - 350, 300), 200],
+}
