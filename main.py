@@ -38,9 +38,7 @@ class Game:
     def setup(self):
         self.player = Player(player_group, (100, 100))
 
-        self.floor = Tile(tile_group, (WIN_WIDTH, 75), (0, WIN_HEIGHT - 75), "blue")
-
-        # import_map(map_one)
+        import_map(map_one)
 
     def menu(self):
         while True:

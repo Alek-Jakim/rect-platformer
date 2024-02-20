@@ -35,34 +35,51 @@ class Player(pygame.sprite.Sprite):
 
         if jump_key[K_SPACE] and not self.is_jumping:
             self.is_jumping = True
-            self.gravity = -1900
+            self.gravity = -900
 
     def move(self, delta):
 
         self.pos.x += self.dir.x * self.velocity * delta
         self.rect.x = round(self.pos.x)
+        self.tile_collision("horizontal")
 
         self.pos.y += self.dir.y * self.gravity * delta
         self.rect.y = round(self.pos.y)
-        self.floor_collision()
+        self.tile_collision("vertical")
 
-    def floor_collision(self):
+    def tile_collision(self, direction):
         for tile in tile_group.sprites():
             if self.rect.colliderect(tile.rect):
-                if (
-                    self.rect.bottom >= tile.rect.top
-                    and self.old_rect.bottom <= tile.old_rect.top
-                ):
-                    self.rect.bottom = tile.rect.top
-                    self.gravity = 0
-                    self.is_jumping = False
+                if direction == "horizontal":
+                    if (
+                        self.rect.left <= tile.rect.right
+                        and self.old_rect.left >= tile.old_rect.right
+                    ):
+                        self.rect.left = tile.rect.right
+                    # right collision
+                    if (
+                        self.rect.right >= tile.rect.left
+                        and self.old_rect.right <= tile.old_rect.left
+                    ):
+                        self.rect.right = tile.rect.left
 
-                self.pos.y = self.rect.y
-            else:
-                self.gravity += 30
+                    self.pos.x = self.rect.x
+                else:
+                    if (
+                        self.rect.bottom >= tile.rect.top
+                        and self.old_rect.bottom <= tile.old_rect.top
+                    ):
+                        self.rect.bottom = tile.rect.top
+                        self.gravity = 0
+                        self.is_jumping = False
+
+                    self.pos.y = self.rect.y
+
+    def increase_gravity(self):
+        self.gravity += 30
 
     def update(self, delta):
         self.old_rect = self.rect.copy()
         self.input()
         self.move(delta)
-        print(self.gravity)
+        self.increase_gravity()
