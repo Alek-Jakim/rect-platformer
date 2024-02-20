@@ -2,6 +2,7 @@ import pygame
 from pygame.math import Vector2
 from pygame.locals import *
 from settings import *
+from scripts.laser import Laser
 
 
 class Player(pygame.sprite.Sprite):
@@ -22,18 +23,30 @@ class Player(pygame.sprite.Sprite):
         self.dir.y = 1
         self.is_jumping = False
 
+        # shooting
+        self.is_shooting = False
+        self.facing_dir = self.dir.x
+        self.shoot_timer = None
+
     def input(self):
         keys = pygame.key.get_pressed()
-        jump_key = pygame.key.get_just_pressed()
+        key_press = pygame.key.get_just_pressed()
 
         if keys[K_a]:
             self.dir.x = -1
+            self.facing_dir = "left"
         elif keys[K_d]:
             self.dir.x = 1
+            self.facing_dir = "right"
         else:
             self.dir.x = 0
 
-        if jump_key[K_SPACE] and not self.is_jumping:
+        if key_press[K_p] and not self.is_shooting:
+            self.shoot_timer = pygame.time.get_ticks()
+            self.is_shooting = True
+            Laser(laser_group, (self.pos.x, self.pos.y), self.facing_dir)
+
+        if key_press[K_SPACE] and not self.is_jumping:
             self.is_jumping = True
             self.gravity = -900
 
@@ -47,6 +60,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = round(self.pos.y)
         self.tile_collision("vertical")
 
+    def laser_timer(self):
+        if self.is_shooting:
+            current_time = pygame.time.get_ticks()
+
+            if current_time - self.shoot_timer >= 1000:
+                self.is_shooting = False
+
     def tile_collision(self, direction):
         for tile in tile_group.sprites():
             if self.rect.colliderect(tile.rect):
@@ -56,7 +76,6 @@ class Player(pygame.sprite.Sprite):
                         and self.old_rect.left >= tile.old_rect.right
                     ):
                         self.rect.left = tile.rect.right
-                    # right collision
                     if (
                         self.rect.right >= tile.rect.left
                         and self.old_rect.right <= tile.old_rect.left
@@ -83,3 +102,4 @@ class Player(pygame.sprite.Sprite):
         self.input()
         self.move(delta)
         self.increase_gravity()
+        self.laser_timer()

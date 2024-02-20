@@ -16,8 +16,7 @@ def draw_text(text, font, color, surface, x, y):
 
 def import_map(map):
     for tile in map:
-        for i in map[tile]:
-            Tile(tile_group, map[tile][0], map[tile][1], map[tile][2])
+        Tile(tile_group, map[tile][0], map[tile][1], map[tile][2])
 
 
 class Game:
@@ -91,12 +90,14 @@ class Game:
                         running = False
 
             player_group.update(dt)
+            laser_group.update(dt)
             tile_group.update()
 
             self.display_surface.fill((0, 0, 0))
 
             player_group.draw(self.display_surface)
             tile_group.draw(self.display_surface)
+            laser_group.draw(self.display_surface)
 
             pygame.display.update()
 
