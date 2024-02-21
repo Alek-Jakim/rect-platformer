@@ -14,6 +14,10 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topright=pos)
         self.old_rect = self.rect.copy()
 
+        self.frame_index = 0
+        self.hurt_timer = None
+        self.is_hurt = False
+
         # float based movement
         self.pos = Vector2(self.rect.topleft)
         self.dir = Vector2()
@@ -25,6 +29,8 @@ class Enemy(pygame.sprite.Sprite):
         self.total_movement = 0
         self.movement_range = movement_range
 
+        self.health = 2
+
     def move(self, delta):
 
         self.pos.x += self.dir.x * self.velocity * delta
@@ -33,6 +39,32 @@ class Enemy(pygame.sprite.Sprite):
         self.pos.y += self.dir.y * self.gravity * delta
         self.rect.y = round(self.pos.y)
         self.tile_collision()
+
+    def take_damage(self):
+        self.health -= 1
+
+        if self.health == 0:
+            self.kill()
+        else:
+            self.is_hurt = True
+            self.hurt_timer = pygame.time.get_ticks()
+
+    def animate(self, delta):
+        self.frame_index += 4 * delta
+
+        if self.is_hurt:
+            if int(self.frame_index) % 2 == 0:
+                self.image.fill("white")
+            else:
+                self.image.fill("orange")
+
+    def damage_timer(self):
+        if self.is_hurt:
+            current_time = pygame.time.get_ticks()
+
+            if current_time - self.hurt_timer >= 3000:
+                self.is_hurt = False
+                self.image.fill("orange")
 
     def lateral_movement(self):
         if self.total_movement >= self.movement_range:
@@ -75,6 +107,8 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self, delta):
         self.old_rect = self.rect.copy()
+        self.animate(delta)
+        self.damage_timer()
         self.move(delta)
         self.increase_gravity()
         self.lateral_movement()

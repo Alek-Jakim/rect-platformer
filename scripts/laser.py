@@ -26,6 +26,11 @@ class Laser(pygame.sprite.Sprite):
             if self.rect.colliderect(tile.rect):
                 self.kill()
 
+        for enemy in enemy_group.sprites():
+            if self.rect.colliderect(enemy.rect):
+                self.kill()
+                enemy.take_damage()
+
     def update(self, dt):
         self.move(dt)
         self.collision()
