@@ -22,7 +22,7 @@ class Enemy(pygame.sprite.Sprite):
         self.pos = Vector2(self.rect.topleft)
         self.dir = Vector2()
         self.dir.x = 1
-        self.velocity = 50
+        self.velocity = 200
 
         self.gravity = 0
         self.dir.y = 1

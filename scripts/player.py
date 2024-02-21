@@ -30,10 +30,14 @@ class Player(pygame.sprite.Sprite):
 
         # take damage
         self.health = 3
+        self.font = pygame.font.Font(None, 42)
+        self.health_text = self.font.render(f"Health: {self.health}/3", True, "white")
+        self.health_text_rect = self.health_text.get_rect()
+        self.health_text_rect.topleft = (100, 20)
+
         self.frame_index = 0
         self.hurt_timer = None
         self.is_hurt = False
-        self.invulnerable = False
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -64,17 +68,15 @@ class Player(pygame.sprite.Sprite):
             if current_time - self.hurt_timer >= 3000:
                 self.is_hurt = False
                 self.image.fill("green")
-                self.invulnerable = False
 
     def take_damage(self):
-        if not self.invulnerable:
+        if not self.is_hurt:
             self.health -= 1
 
             if self.health == 0:
                 self.kill()
             else:
                 self.is_hurt = True
-                self.invulnerable = True
                 self.hurt_timer = pygame.time.get_ticks()
 
     def animate(self, delta):
@@ -138,6 +140,10 @@ class Player(pygame.sprite.Sprite):
     def increase_gravity(self):
         self.gravity += 30
 
+    def draw_health_text(self, surface):
+        self.health_text = self.font.render(f"Health: {self.health}/3", True, "white")
+        surface.blit(self.health_text, self.health_text_rect)
+
     def update(self, delta):
         self.old_rect = self.rect.copy()
         self.input()
@@ -147,4 +153,3 @@ class Player(pygame.sprite.Sprite):
         self.increase_gravity()
         self.laser_timer()
         self.enemy_collision()
-        print(self.invulnerable)

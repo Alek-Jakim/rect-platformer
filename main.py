@@ -104,6 +104,8 @@ class Game:
             self.display_surface.fill((0, 0, 0))
 
             player_group.draw(self.display_surface)
+            self.player.draw_health_text(self.display_surface)
+
             tile_group.draw(self.display_surface)
             laser_group.draw(self.display_surface)
             enemy_group.draw(self.display_surface)

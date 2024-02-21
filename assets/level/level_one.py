@@ -14,8 +14,8 @@ map_one = {
 
 
 map_one_enemies = {
-    "enemy_one": [(200, 300), 200],
-    "enemy_two": [(WIN_WIDTH - 350, 300), 200],
-    "enemy_three": [(WIN_WIDTH - 200, 150), 150],
-    "enemy_four": [(150, 150), 150],
+    "enemy_one": [(200, 300), 50],
+    "enemy_two": [(WIN_WIDTH - 350, 300), 50],
+    "enemy_three": [(WIN_WIDTH - 200, 150), 50],
+    "enemy_four": [(150, 150), 50],
 }
