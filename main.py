@@ -1,11 +1,12 @@
 import pygame, sys
 from pygame.locals import *
-from scripts.button import Button
 from settings import *
+from scripts.button import Button
 from scripts.player import Player
 from scripts.tile import Tile
-from assets.level.level_one import map_one, map_one_enemies
+from scripts.portal import Portal
 from scripts.enemy import Enemy
+from assets.level.level_one import map_one, map_one_enemies
 
 
 def draw_text(text, font, color, surface, x, y):
@@ -18,6 +19,7 @@ def draw_text(text, font, color, surface, x, y):
 def import_map(map):
     for tile in map:
         Tile(tile_group, map[tile][0], map[tile][1], map[tile][2])
+    Portal(portal_group, (WIN_WIDTH - 150, 30))
 
 
 def import_enemies(enemies):
@@ -100,6 +102,7 @@ class Game:
             enemy_group.update(dt)
             laser_group.update(dt)
             tile_group.update()
+            portal_group.update()
 
             self.display_surface.fill((0, 0, 0))
 
@@ -109,6 +112,7 @@ class Game:
             tile_group.draw(self.display_surface)
             laser_group.draw(self.display_surface)
             enemy_group.draw(self.display_surface)
+            portal_group.draw(self.display_surface)
 
             pygame.display.update()
 
