@@ -28,6 +28,13 @@ class Player(pygame.sprite.Sprite):
         self.facing_dir = self.dir.x
         self.shoot_timer = None
 
+        # take damage
+        self.health = 3
+        self.frame_index = 0
+        self.hurt_timer = None
+        self.is_hurt = False
+        self.invulnerable = False
+
     def input(self):
         keys = pygame.key.get_pressed()
         key_press = pygame.key.get_just_pressed()
@@ -49,6 +56,35 @@ class Player(pygame.sprite.Sprite):
         if key_press[K_SPACE] and not self.is_jumping:
             self.is_jumping = True
             self.gravity = -900
+
+    def damage_timer(self):
+        if self.is_hurt:
+            current_time = pygame.time.get_ticks()
+
+            if current_time - self.hurt_timer >= 3000:
+                self.is_hurt = False
+                self.image.fill("green")
+                self.invulnerable = False
+
+    def take_damage(self):
+        if not self.invulnerable:
+            self.health -= 1
+
+            if self.health == 0:
+                self.kill()
+            else:
+                self.is_hurt = True
+                self.invulnerable = True
+                self.hurt_timer = pygame.time.get_ticks()
+
+    def animate(self, delta):
+        self.frame_index += 4 * delta
+
+        if self.is_hurt:
+            if int(self.frame_index) % 2 == 0:
+                self.image.fill("white")
+            else:
+                self.image.fill("green")
 
     def move(self, delta):
 
@@ -94,12 +130,21 @@ class Player(pygame.sprite.Sprite):
 
                     self.pos.y = self.rect.y
 
+    def enemy_collision(self):
+        for enemy in enemy_group.sprites():
+            if self.rect.colliderect(enemy.rect):
+                self.take_damage()
+
     def increase_gravity(self):
         self.gravity += 30
 
     def update(self, delta):
         self.old_rect = self.rect.copy()
         self.input()
+        self.animate(delta)
+        self.damage_timer()
         self.move(delta)
         self.increase_gravity()
         self.laser_timer()
+        self.enemy_collision()
+        print(self.invulnerable)
