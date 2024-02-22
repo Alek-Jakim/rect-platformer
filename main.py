@@ -3,10 +3,16 @@ from pygame.locals import *
 from settings import *
 from scripts.button import Button
 from scripts.player import Player
-from scripts.tile import Tile
-from scripts.portal import Portal
 from scripts.enemy import Enemy
-from assets.level.level_one import map_one, map_one_enemies
+from scripts.tile import Tile
+from assets.level.level_one import map_one, map_one_enemies, map_two
+from scripts.portal import Portal
+from scripts.level_manager import LevelManager
+
+
+def import_map(map):
+    for tile in map:
+        Tile(tile_group, map[tile][0], map[tile][1], map[tile][2])
 
 
 def draw_text(text, font, color, surface, x, y):
@@ -14,12 +20,6 @@ def draw_text(text, font, color, surface, x, y):
     textrect = textobj.get_rect()
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
-
-
-def import_map(map):
-    for tile in map:
-        Tile(tile_group, map[tile][0], map[tile][1], map[tile][2])
-    Portal(portal_group, (WIN_WIDTH - 150, 30))
 
 
 def import_enemies(enemies):
@@ -40,13 +40,20 @@ class Game:
 
         self.clicked = False
 
-        self.setup()
+        self.level_manager = LevelManager(
+            tile_group, player_group, enemy_group, map_one, map_one_enemies
+        )
 
-    def setup(self):
-        self.player = Player(player_group, (100, 500))
+        self.level_manager.load_map()
 
-        import_map(map_one)
-        import_enemies(map_one_enemies)
+        # self.setup()
+
+    # def setup(self):
+    #     self.player = Player(player_group, (100, 500))
+    #     self.portal = Portal(portal_group, (WIN_WIDTH - 150, 30))
+
+    #     import_map(map_one)
+    #     import_enemies(map_one_enemies)
 
     def menu(self):
         while True:
@@ -102,17 +109,15 @@ class Game:
             enemy_group.update(dt)
             laser_group.update(dt)
             tile_group.update()
-            portal_group.update()
 
             self.display_surface.fill((0, 0, 0))
-
-            player_group.draw(self.display_surface)
-            self.player.draw_health_text(self.display_surface)
 
             tile_group.draw(self.display_surface)
             laser_group.draw(self.display_surface)
             enemy_group.draw(self.display_surface)
             portal_group.draw(self.display_surface)
+            player_group.draw(self.display_surface)
+            player_group.sprite.draw_health_text(self.display_surface)
 
             pygame.display.update()
 

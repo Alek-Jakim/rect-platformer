@@ -107,7 +107,7 @@ class Player(pygame.sprite.Sprite):
 
     def tile_collision(self, direction):
         for tile in tile_group.sprites():
-            if self.rect.colliderect(tile.rect):
+            if self.rect.colliderect(tile.rect) and not tile.color == "white":
                 if direction == "horizontal":
                     if (
                         self.rect.left <= tile.rect.right
@@ -131,6 +131,10 @@ class Player(pygame.sprite.Sprite):
                         self.is_jumping = False
 
                     self.pos.y = self.rect.y
+            elif self.rect.colliderect(tile.rect) and tile.color == "white":
+                key_pressed = pygame.key.get_just_pressed()
+                if key_pressed[K_o]:
+                    print("heyoo")
 
     def enemy_collision(self):
         for enemy in enemy_group.sprites():
