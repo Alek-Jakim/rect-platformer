@@ -2,6 +2,7 @@ from scripts.tile import Tile
 from scripts.player import Player
 from scripts.enemy import Enemy
 from settings import *
+from scripts.sounds import portal_sound
 
 
 class LevelManager:
@@ -47,5 +48,5 @@ class LevelManager:
                         if key_pressed[pygame.K_o] and new_level_index <= len(
                             self.level
                         ):
-                            print(new_level_index, len(self.level))
                             self.update_map(new_level_index)
+                            portal_sound.play()

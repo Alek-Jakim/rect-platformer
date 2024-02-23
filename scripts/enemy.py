@@ -2,6 +2,7 @@ import pygame
 from pygame.math import Vector2
 from pygame.locals import *
 from settings import *
+from scripts.sounds import hit_sound
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -42,7 +43,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def take_damage(self):
         self.health -= 1
-
+        hit_sound.play()
         if self.health == 0:
             self.kill()
         else:
