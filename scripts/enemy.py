@@ -55,9 +55,9 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.is_hurt:
             if int(self.frame_index) % 2 == 0:
-                self.image.fill("white")
-            else:
                 self.image.fill("orange")
+            else:
+                self.image.fill("white")
 
     def damage_timer(self):
         if self.is_hurt:

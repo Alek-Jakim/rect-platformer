@@ -3,7 +3,7 @@ from pygame.math import Vector2
 from pygame.locals import *
 from settings import *
 from scripts.laser import Laser
-from scripts.sounds import laser_sound
+from scripts.sounds import laser_sound, damage_sound
 
 
 class Player(pygame.sprite.Sprite):
@@ -56,7 +56,7 @@ class Player(pygame.sprite.Sprite):
         if key_press[K_p] and not self.is_shooting:
             self.shoot_timer = pygame.time.get_ticks()
             self.is_shooting = True
-            Laser(laser_group, (self.pos.x, self.pos.y), self.facing_dir)
+            Laser(laser_group, (self.pos.x + 5, self.pos.y + 15), self.facing_dir)
             laser_sound.play()
 
         if key_press[K_SPACE] and not self.is_jumping:
@@ -74,6 +74,9 @@ class Player(pygame.sprite.Sprite):
     def take_damage(self):
         if not self.is_hurt:
             self.health -= 1
+
+            if not self.health == 0:
+                damage_sound.play()
 
             if self.health == 0:
                 self.kill()

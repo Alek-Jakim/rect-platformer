@@ -2,29 +2,17 @@ import pygame, sys
 from pygame.locals import *
 from settings import *
 from scripts.button import Button
-from scripts.player import Player
-from scripts.enemy import Enemy
-from scripts.tile import Tile
 from assets.level.level_one import level_one
-from scripts.portal import Portal
 from scripts.level_manager import LevelManager
+from scripts.sounds import bg_sound, game_over_sound
 
 
-def import_map(map):
-    for tile in map:
-        Tile(tile_group, map[tile][0], map[tile][1], map[tile][2])
-
-
-def draw_text(text, font, color, surface, x, y):
+def draw_text(text, font, color, surface):
     textobj = font.render(text, 1, color)
-    textrect = textobj.get_rect()
-    textrect.topleft = (x, y)
+    textrect = textobj.get_rect(
+        center=(surface.get_width() // 2, surface.get_height() // 2)
+    )
     surface.blit(textobj, textrect)
-
-
-def import_enemies(enemies):
-    for enemy in enemies:
-        Enemy(enemy_group, enemies[enemy][0], enemies[enemy][1])
 
 
 class Game:
@@ -36,15 +24,16 @@ class Game:
 
         self.clock = pygame.time.Clock()
 
-        self.font = pygame.font.SysFont(None, 20)
+        self.font = pygame.font.SysFont(None, 32)
 
         self.clicked = False
+        self.game_over = False
 
         self.level_manager = LevelManager(level_one)
 
-        self.level_manager.load_map()
+        bg_sound.set_volume(0.5)
 
-        print(len(level_one))
+        self.level_manager.load_map()
 
     def menu(self):
         while True:
@@ -64,6 +53,8 @@ class Game:
             if start_btn.btn_rect.collidepoint((mx, my)):
                 if self.clicked:
                     self.game()
+                    self.game_over = False
+                    self.level_manager.load_map()
 
             start_btn.render(self.display_surface)
 
@@ -85,6 +76,7 @@ class Game:
 
     def game(self):
         running = True
+        bg_sound.play(loops=-1)
         while running:
             dt = self.clock.tick(60) / 1000
 
@@ -95,24 +87,34 @@ class Game:
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         running = False
+            if not self.game_over:
+                player_group.update(dt, self.level_manager)
+                enemy_group.update(dt)
+                laser_group.update(dt)
+                tile_group.update()
 
-            player_group.update(dt, self.level_manager)
-            enemy_group.update(dt)
-            laser_group.update(dt)
-            tile_group.update()
+                self.level_manager.portal_management(player_group.sprite)
 
-            self.level_manager.portal_management(player_group.sprite)
+                self.display_surface.fill((0, 0, 0))
 
-            self.display_surface.fill((0, 0, 0))
+                tile_group.draw(self.display_surface)
+                laser_group.draw(self.display_surface)
+                enemy_group.draw(self.display_surface)
+                portal_group.draw(self.display_surface)
+                player_group.draw(self.display_surface)
 
-            tile_group.draw(self.display_surface)
-            laser_group.draw(self.display_surface)
-            enemy_group.draw(self.display_surface)
-            portal_group.draw(self.display_surface)
-            player_group.draw(self.display_surface)
-
-            if player_group.sprite:
-                player_group.sprite.draw_health_text(self.display_surface)
+                if player_group.sprite:
+                    player_group.sprite.draw_health_text(self.display_surface)
+                else:
+                    self.game_over = True
+                    game_over_sound.play()
+                    bg_sound.stop()
+                    draw_text(
+                        "You died! Press Escape to go back to the main menu.",
+                        self.font,
+                        "red",
+                        self.display_surface,
+                    )
 
             pygame.display.update()
 

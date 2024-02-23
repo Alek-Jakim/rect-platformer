@@ -22,17 +22,17 @@ class LevelManager:
                             asset[tile][2],
                         )
                     else:
-                        Player(player_group, asset[tile][0])
+                        if not player_group.sprite:
+                            Player(player_group, asset[tile][0])
+                        else:
+                            player_group.sprite.pos.x = asset[tile][0][0]
+                            player_group.sprite.pos.y = asset[tile][0][1]
+
             else:
                 for enemy in asset:
                     Enemy(enemy_group, asset[enemy][0], asset[enemy][1])
 
-    def load_map(self):
-        if not len(tile_group.sprites()) == 0:
-            tile_group.empty()
-        self.load_map_assets()
-
-    def update_map(self, level_index):
+    def load_map(self, level_index=1):
         tile_group.empty()
         enemy_group.empty()
         self.level_index = level_index
@@ -48,5 +48,5 @@ class LevelManager:
                         if key_pressed[pygame.K_o] and new_level_index <= len(
                             self.level
                         ):
-                            self.update_map(new_level_index)
+                            self.load_map(new_level_index)
                             portal_sound.play()
