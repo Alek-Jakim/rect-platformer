@@ -8,7 +8,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, groups, pos, movement_range):
         super().__init__(groups)
 
-        self.image = pygame.Surface((50, 50))
+        self.image = pygame.Surface((50, 75))
         self.image.fill("orange")
         self.starting_pos = pos[0]
         self.rect = self.image.get_rect(topright=pos)

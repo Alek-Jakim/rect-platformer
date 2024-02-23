@@ -131,10 +131,6 @@ class Player(pygame.sprite.Sprite):
                         self.is_jumping = False
 
                     self.pos.y = self.rect.y
-            elif self.rect.colliderect(tile.rect) and tile.color == "white":
-                key_pressed = pygame.key.get_just_pressed()
-                if key_pressed[K_o]:
-                    print("heyoo")
 
     def enemy_collision(self):
         for enemy in enemy_group.sprites():
@@ -148,7 +144,7 @@ class Player(pygame.sprite.Sprite):
         self.health_text = self.font.render(f"Health: {self.health}/3", True, "white")
         surface.blit(self.health_text, self.health_text_rect)
 
-    def update(self, delta):
+    def update(self, delta, level_manager):
         self.old_rect = self.rect.copy()
         self.input()
         self.animate(delta)

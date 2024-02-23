@@ -5,7 +5,7 @@ from scripts.button import Button
 from scripts.player import Player
 from scripts.enemy import Enemy
 from scripts.tile import Tile
-from assets.level.level_one import map_one, map_one_enemies, map_two
+from assets.level.level_one import level_one
 from scripts.portal import Portal
 from scripts.level_manager import LevelManager
 
@@ -40,20 +40,9 @@ class Game:
 
         self.clicked = False
 
-        self.level_manager = LevelManager(
-            tile_group, player_group, enemy_group, map_one, map_one_enemies
-        )
+        self.level_manager = LevelManager(level_one)
 
         self.level_manager.load_map()
-
-        # self.setup()
-
-    # def setup(self):
-    #     self.player = Player(player_group, (100, 500))
-    #     self.portal = Portal(portal_group, (WIN_WIDTH - 150, 30))
-
-    #     import_map(map_one)
-    #     import_enemies(map_one_enemies)
 
     def menu(self):
         while True:
@@ -105,10 +94,12 @@ class Game:
                     if event.key == K_ESCAPE:
                         running = False
 
-            player_group.update(dt)
+            player_group.update(dt, self.level_manager)
             enemy_group.update(dt)
             laser_group.update(dt)
             tile_group.update()
+
+            self.level_manager.portal_management(player_group.sprite)
 
             self.display_surface.fill((0, 0, 0))
 
@@ -117,7 +108,9 @@ class Game:
             enemy_group.draw(self.display_surface)
             portal_group.draw(self.display_surface)
             player_group.draw(self.display_surface)
-            player_group.sprite.draw_health_text(self.display_surface)
+
+            if player_group.sprite:
+                player_group.sprite.draw_health_text(self.display_surface)
 
             pygame.display.update()
 
