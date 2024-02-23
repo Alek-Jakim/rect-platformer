@@ -38,9 +38,14 @@ class LevelManager:
         self.load_map_assets()
 
     def portal_management(self, player):
-        for tile in tile_group.sprites():
-            if player.rect.colliderect(tile.rect):
-                if tile.color == "white":
-                    key_pressed = pygame.key.get_just_pressed()
-                    if key_pressed[pygame.K_o]:
-                        self.update_map(self.level_index + 1)
+        new_level_index = self.level_index + 1
+        if player:
+            for tile in tile_group.sprites():
+                if player.rect.colliderect(tile.rect):
+                    if tile.color == "white":
+                        key_pressed = pygame.key.get_just_pressed()
+                        if key_pressed[pygame.K_o] and new_level_index <= len(
+                            self.level
+                        ):
+                            print(new_level_index, len(self.level))
+                            self.update_map(new_level_index)

@@ -44,6 +44,8 @@ class Game:
 
         self.level_manager.load_map()
 
+        print(len(level_one))
+
     def menu(self):
         while True:
             self.display_surface.fill((0, 0, 0))
