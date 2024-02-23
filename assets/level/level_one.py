@@ -33,7 +33,7 @@ level_one = {
             "portal": [(80, 120), (80, WIN_HEIGHT - 195), "white"],
         },
         {
-            "enemy_one": [(200, 500), 150],
+            "enemy_one": [(200, 400), 150],
             "enemy_two": [(WIN_WIDTH - 700, 85), 100],
             "enemy_three": [(WIN_WIDTH - 350, 500), 100],
         },
@@ -43,7 +43,28 @@ level_one = {
             "floor": [(WIN_WIDTH, 75), (0, WIN_HEIGHT - 75), "blue"],
             "wall_left": [(50, WIN_HEIGHT), (0, 0), "blue"],
             "wall_right": [(50, WIN_HEIGHT), (WIN_WIDTH - 50, 0), "blue"],
-            "player": [(WIN_WIDTH // 2, WIN_HEIGHT // 2)],
-        }
+            "platform_one": [(50, 25), (100, WIN_HEIGHT - 150), "blue"],
+            "platform_two": [(50, 25), (443, 401), "blue"],
+            "platform_three": [(50, 25), (685, 331), "blue"],
+            "platform_four": [(50, 25), (985, 331), "blue"],
+            "platform_five": [(50, 25), (785, 131), "blue", True, 100],
+            "platform_blabla": [(150, 25), (20, 185), "blue"],
+            "player": [(WIN_WIDTH - 200, WIN_HEIGHT - 150)],
+            "portal": [(80, 120), (70, 65), "white"],
+        },
+        {
+            "enemy_one": [(200, 200), 100],
+            "enemy_two": [(985, 281), 100],
+            "enemy_three": [(600, 500), 20],
+        },
+    ],
+    4: [
+        {
+            "floor": [(WIN_WIDTH, 75), (0, WIN_HEIGHT - 75), "blue"],
+            "wall_left": [(50, WIN_HEIGHT), (0, 0), "blue"],
+            "wall_right": [(50, WIN_HEIGHT), (WIN_WIDTH - 50, 0), "blue"],
+            "player": [(100, WIN_HEIGHT - 150)],
+            "portal": [(80, 120), (WIN_WIDTH - 130, WIN_HEIGHT - 196), "purple"],
+        },
     ],
 }

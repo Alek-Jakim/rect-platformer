@@ -112,7 +112,11 @@ class Player(pygame.sprite.Sprite):
 
     def tile_collision(self, direction):
         for tile in tile_group.sprites():
-            if self.rect.colliderect(tile.rect) and not tile.color == "white":
+            if (
+                self.rect.colliderect(tile.rect)
+                and not tile.color == "white"
+                and not tile.color == "purple"
+            ):
                 if direction == "horizontal":
                     if (
                         self.rect.left <= tile.rect.right

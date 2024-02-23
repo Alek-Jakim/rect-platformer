@@ -15,12 +15,22 @@ class LevelManager:
             if idx == 0:
                 for tile in asset:
                     if not tile == "player":
-                        Tile(
-                            tile_group,
-                            asset[tile][0],
-                            asset[tile][1],
-                            asset[tile][2],
-                        )
+                        if len(asset[tile]) > 3:
+                            Tile(
+                                tile_group,
+                                asset[tile][0],
+                                asset[tile][1],
+                                asset[tile][2],
+                                asset[tile][3],
+                                asset[tile][4],
+                            )
+                        else:
+                            Tile(
+                                tile_group,
+                                asset[tile][0],
+                                asset[tile][1],
+                                asset[tile][2],
+                            )
                     else:
                         if not player_group.sprite:
                             Player(player_group, asset[tile][0])

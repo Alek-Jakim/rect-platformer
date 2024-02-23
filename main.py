@@ -33,7 +33,7 @@ class Game:
 
         bg_sound.set_volume(0.5)
 
-        self.level_manager.load_map()
+        self.level_manager.load_map(4)
 
     def menu(self):
         while True:
@@ -54,7 +54,7 @@ class Game:
                 if self.clicked:
                     self.game()
                     self.game_over = False
-                    self.level_manager.load_map()
+                    # self.level_manager.load_map()
 
             start_btn.render(self.display_surface)
 
@@ -91,7 +91,7 @@ class Game:
                 player_group.update(dt, self.level_manager)
                 enemy_group.update(dt)
                 laser_group.update(dt)
-                tile_group.update()
+                tile_group.update(dt)
 
                 self.level_manager.portal_management(player_group.sprite)
 
