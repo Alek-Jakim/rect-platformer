@@ -47,22 +47,3 @@ class LevelManager:
         enemy_group.empty()
         self.level_index = level_index
         self.load_map_assets()
-
-    def portal_management(self, player, game_state_manager, game):
-        new_level_index = self.level_index + 1
-        if player:
-            for tile in tile_group.sprites():
-                key_pressed = pygame.key.get_just_pressed()
-                if player.rect.colliderect(tile.rect):
-                    if tile.color == "white":
-                        if key_pressed[pygame.K_o] and new_level_index <= len(
-                            self.level
-                        ):
-                            self.load_map(new_level_index)
-                            portal_sound.play()
-
-                    if tile.color == "purple":
-                        if key_pressed[pygame.K_o]:
-                            game_state_manager.set_state("level_transition")
-                            game_state_manager.set_game_over(True)
-                            game.set_running(False)

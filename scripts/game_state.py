@@ -2,7 +2,7 @@ import pygame, sys
 from pygame.locals import *
 from settings import *
 from scripts.button import Button
-from scripts.sounds import bg_sound, game_over_sound
+from scripts.sounds import bg_sound, game_over_sound, portal_sound
 from scripts.game_state import *
 
 
@@ -25,14 +25,29 @@ class Level(Scene):
 
         self.level_manager.load_map()
 
-        self.running = True
+    def portal_management(self):
+        new_level_index = self.level_index + 1
+        if player_group.sprite:
+            for tile in tile_group.sprites():
+                key_pressed = pygame.key.get_just_pressed()
+                if player_group.sprite.rect.colliderect(tile.rect):
+                    if tile.color == "white":
+                        if key_pressed[pygame.K_o] and new_level_index <= len(
+                            self.level
+                        ):
+                            self.load_map(new_level_index)
+                            portal_sound.play()
 
-    def set_running(self, running):
-        self.running = running
+                    if tile.color == "purple":
+                        if key_pressed[pygame.K_o]:
+                            self.game_state_manager.set_state("level_transition")
+                            running = False
 
     def run(self):
         bg_sound.play(loops=-1)
-        while self.running:
+        bg_sound.set_volume(0.1)
+        running = True
+        while running:
             dt = self.clock.tick(60) / 1000
 
             for event in pygame.event.get():
@@ -42,7 +57,7 @@ class Level(Scene):
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         self.game_state_manager.set_state("menu")
-                        self.running = False
+                        running = False
 
             if not self.game_state_manager.get_game_over():
                 player_group.update(dt)
@@ -50,9 +65,24 @@ class Level(Scene):
                 laser_group.update(dt)
                 tile_group.update(dt)
 
-                self.level_manager.portal_management(
-                    player_group.sprite, self.game_state_manager, self
-                )
+                new_level_index = self.level_manager.level_index + 1
+                if player_group.sprite:
+                    for tile in tile_group.sprites():
+                        key_pressed = pygame.key.get_just_pressed()
+                        if player_group.sprite.rect.colliderect(tile.rect):
+                            if tile.color == "white":
+                                if key_pressed[pygame.K_o] and new_level_index <= len(
+                                    self.level_manager.level
+                                ):
+                                    self.level_manager.load_map(new_level_index)
+                                    portal_sound.play()
+
+                            if tile.color == "purple":
+                                if key_pressed[pygame.K_o]:
+                                    self.game_state_manager.set_state(
+                                        "level_transition"
+                                    )
+                                    running = False
 
                 self.screen.fill((0, 0, 0))
 
@@ -104,8 +134,7 @@ class Menu(Scene):
             if start_btn.btn_rect.collidepoint((mx, my)):
                 if self.clicked:
                     self.game_state_manager.set_state("level")
-                    self.game_state_manager.set_game_over(False)
-                    self.level_manager.load_map(4)
+                    self.level_manager.load_map()
                     running = False
 
             start_btn.render(self.screen)
@@ -120,8 +149,9 @@ class Menu(Scene):
                     if event.button == 1:
                         self.clicked = True
 
-            pygame.display.update()
             self.clock.tick(60)
+
+            pygame.display.update()
 
 
 class LevelTransition(Scene):
@@ -132,7 +162,6 @@ class LevelTransition(Scene):
 
     def run(self):
         running = True
-        self.clock.tick(60)
         bg_sound.stop()
         while running:
             self.screen.fill((0, 0, 0))
@@ -153,8 +182,9 @@ class LevelTransition(Scene):
                         self.game_state_manager.set_state("menu")
                         running = False
 
-            pygame.display.update()
             self.clock.tick(60)
+
+            pygame.display.update()
 
 
 class GameStateManager:

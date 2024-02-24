@@ -45,10 +45,6 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        self.game_state_manager.set_state("level")
-                        running = False
 
             self.game_states[self.game_state_manager.get_state()].run()
 
