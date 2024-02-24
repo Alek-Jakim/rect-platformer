@@ -153,7 +153,7 @@ class Player(pygame.sprite.Sprite):
         self.health_text = self.font.render(f"Health: {self.health}/3", True, "white")
         surface.blit(self.health_text, self.health_text_rect)
 
-    def update(self, delta, level_manager):
+    def update(self, delta):
         self.old_rect = self.rect.copy()
         self.input()
         self.animate(delta)
