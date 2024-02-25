@@ -25,24 +25,6 @@ class Level(Scene):
 
         self.level_manager.load_map()
 
-    def portal_management(self):
-        new_level_index = self.level_index + 1
-        if player_group.sprite:
-            for tile in tile_group.sprites():
-                key_pressed = pygame.key.get_just_pressed()
-                if player_group.sprite.rect.colliderect(tile.rect):
-                    if tile.color == "white":
-                        if key_pressed[pygame.K_o] and new_level_index <= len(
-                            self.level
-                        ):
-                            self.load_map(new_level_index)
-                            portal_sound.play()
-
-                    if tile.color == "purple":
-                        if key_pressed[pygame.K_o]:
-                            self.game_state_manager.set_state("level_transition")
-                            running = False
-
     def run(self):
         bg_sound.play(loops=-1)
         bg_sound.set_volume(0.1)
@@ -58,6 +40,7 @@ class Level(Scene):
                     if event.key == K_ESCAPE:
                         self.game_state_manager.set_state("menu")
                         running = False
+                        player_group.sprite.kill()
 
             if not self.game_state_manager.get_game_over():
                 player_group.update(dt)
@@ -83,6 +66,7 @@ class Level(Scene):
                                         "level_transition"
                                     )
                                     running = False
+                                    player_group.sprite.kill()
 
                 self.screen.fill((0, 0, 0))
 
@@ -134,6 +118,7 @@ class Menu(Scene):
             if start_btn.btn_rect.collidepoint((mx, my)):
                 if self.clicked:
                     self.game_state_manager.set_state("level")
+                    self.game_state_manager.set_game_over(False)
                     self.level_manager.load_map()
                     running = False
 

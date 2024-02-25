@@ -2,7 +2,6 @@ from scripts.tile import Tile
 from scripts.player import Player
 from scripts.enemy import Enemy
 from settings import *
-from scripts.sounds import portal_sound
 
 
 class LevelManager:
